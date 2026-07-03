@@ -1,0 +1,4 @@
+openai>=1.93.0
+pydantic>=2.8.0
+pandas>=2.2.0
+Pillow>=10.4.0

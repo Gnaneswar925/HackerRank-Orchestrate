@@ -1,0 +1,529 @@
+PROMPT - 1
+
+You are a senior AI engineer.
+
+Build a complete production-ready Python project for a multimodal damage claim verification system.
+
+Hackathon Requirements:
+
+Input:
+
+* claims.csv
+* sample_claims.csv
+* user_history.csv
+* evidence_requirements.csv
+* image folders containing claim evidence
+
+Objects:
+
+* car
+* laptop
+* package
+
+Output:
+
+* output.csv
+
+The system must:
+
+1. Extract damage claims from conversations.
+2. Analyze uploaded images.
+3. Match image evidence against the claim.
+4. Check evidence requirements.
+5. Add user-history risk context.
+6. Decide:
+
+   * supported
+   * contradicted
+   * not_enough_information
+7. Generate all required output columns exactly as specified.
+
+Architecture Requirements:
+
+Create a modular agent-based design:
+
+agents/
+
+* claim_agent.py
+* vision_agent.py
+* evidence_agent.py
+* risk_agent.py
+* decision_agent.py
+
+models/
+
+* schemas.py
+
+evaluation/
+
+* evaluate.py
+* evaluation_report.md template
+
+utils/
+
+* image_utils.py
+* csv_utils.py
+
+main.py
+requirements.txt
+README.md
+
+Use:
+
+* Python
+* OpenAI SDK
+* Pydantic
+* Pandas
+* Pillow
+
+Do NOT implement yet.
+
+Only generate:
+
+1. folder structure
+2. file responsibilities
+3. data flow diagram
+4. implementation plan
+5. dependency list
+
+The design must be optimized for hackathon delivery, low cost, and maintainability.
+
+
+PROMPT - 2
+
+
+Implement all Pydantic schemas for the project.
+
+Requirements:
+
+Create strongly typed models for:
+
+ClaimExtraction
+VisionAnalysis
+EvidenceResult
+RiskAssessment
+FinalDecision
+
+The FinalDecision model must contain exactly:
+
+* user_id
+* image_paths
+* user_claim
+* claim_object
+* evidence_standard_met
+* evidence_standard_met_reason
+* risk_flags
+* issue_type
+* object_part
+* claim_status
+* claim_status_justification
+* supporting_image_ids
+* valid_image
+* severity
+
+Use Enums wherever possible.
+
+Allowed values:
+
+claim_status:
+
+* supported
+* contradicted
+* not_enough_information
+
+issue_type:
+
+* dent
+* scratch
+* crack
+* glass_shatter
+* broken_part
+* missing_part
+* torn_packaging
+* crushed_packaging
+* water_damage
+* stain
+* none
+* unknown
+
+severity:
+
+* none
+* low
+* medium
+* high
+* unknown
+
+Generate complete schemas.py.
+Implement all Pydantic schemas for the project.
+
+Requirements:
+
+Create strongly typed models for:
+
+ClaimExtraction
+VisionAnalysis
+EvidenceResult
+RiskAssessment
+FinalDecision
+
+The FinalDecision model must contain exactly:
+
+* user_id
+* image_paths
+* user_claim
+* claim_object
+* evidence_standard_met
+* evidence_standard_met_reason
+* risk_flags
+* issue_type
+* object_part
+* claim_status
+* claim_status_justification
+* supporting_image_ids
+* valid_image
+* severity
+
+Use Enums wherever possible.
+
+Allowed values:
+
+claim_status:
+
+* supported
+* contradicted
+* not_enough_information
+
+issue_type:
+
+* dent
+* scratch
+* crack
+* glass_shatter
+* broken_part
+* missing_part
+* torn_packaging
+* crushed_packaging
+* water_damage
+* stain
+* none
+* unknown
+
+severity:
+
+* none
+* low
+* medium
+* high
+* unknown
+
+Generate complete schemas.py.
+
+
+
+PROMPT - 3
+
+
+Implement vision_agent.py.
+
+This is the most important component.
+
+Input:
+
+* image paths
+* claim object
+* extracted claim
+
+Analyze one or more images using OpenAI vision.
+
+Tasks:
+
+1. Verify object type.
+2. Detect visible damage.
+3. Identify:
+
+   * issue_type
+   * object_part
+   * severity
+4. Determine image quality.
+5. Determine whether damage is clearly visible.
+6. Detect:
+
+   * blurry_image
+   * cropped_or_obstructed
+   * low_light_or_glare
+   * wrong_angle
+   * wrong_object
+   * wrong_object_part
+   * damage_not_visible
+   * possible_manipulation
+
+Return:
+
+VisionAnalysis schema.
+
+Important:
+Images are primary source of truth.
+
+The agent must never assume damage exists unless visible.
+
+Provide:
+
+* complete prompt engineering
+* image processing code
+* OpenAI Vision integration
+* structured outputs
+
+Generate production-ready code.
+
+
+
+
+PROMPT - 4
+
+Implement evidence_agent.py.
+
+Input:
+
+* claim object
+* issue type
+* image findings
+* evidence_requirements.csv
+
+Goal:
+
+Determine whether minimum evidence requirements are satisfied.
+
+Requirements:
+
+Load evidence_requirements.csv.
+
+Match:
+
+* claim_object
+* applies_to
+
+Evaluate:
+
+* evidence_standard_met
+* evidence_standard_met_reason
+
+Return EvidenceResult schema.
+
+The reasoning must be concise and image-grounded.
+
+Generate production-ready code.
+
+
+
+PROMPT - 5
+
+
+Implement risk_agent.py.
+
+Input:
+
+* user_id
+* user_history.csv
+
+Goal:
+
+Generate risk context only.
+
+History must never override image evidence.
+
+Risk flags may include:
+
+* user_history_risk
+* manual_review_required
+
+Consider:
+
+* high rejection rate
+* abnormal claim frequency
+* suspicious history flags
+
+Output:
+RiskAssessment schema.
+
+Provide:
+
+* CSV loading
+* scoring logic
+* threshold definitions
+* explanations
+
+Generate production-ready code.
+
+
+PROMPT - 6 
+
+
+Implement decision_agent.py.
+
+Inputs:
+
+* ClaimExtraction
+* VisionAnalysis
+* EvidenceResult
+* RiskAssessment
+
+Decision hierarchy:
+
+1. Images are primary source of truth.
+2. User history cannot override clear image evidence.
+3. Evidence requirements must be considered.
+
+Output:
+FinalDecision schema.
+
+Rules:
+
+SUPPORTED:
+
+* claim matches visible damage
+* evidence sufficient
+
+CONTRADICTED:
+
+* relevant object part visible
+* claimed damage absent
+
+NOT_ENOUGH_INFORMATION:
+
+* insufficient evidence
+* poor image quality
+* wrong angle
+* object not visible
+
+Generate:
+
+* deterministic decision logic
+* detailed justifications
+* supporting image IDs
+
+Generate production-ready code.
+
+
+
+
+PROMPT - 7
+
+
+Implement main.py.
+
+Requirements:
+
+1. Load claims.csv.
+2. Load supporting datasets.
+3. Process every claim.
+
+Pipeline:
+
+Claim Agent
+→ Vision Agent
+→ Evidence Agent
+→ Risk Agent
+→ Decision Agent
+
+Generate:
+output.csv
+
+Output columns must match exactly:
+
+* user_id
+* image_paths
+* user_claim
+* claim_object
+* evidence_standard_met
+* evidence_standard_met_reason
+* risk_flags
+* issue_type
+* object_part
+* claim_status
+* claim_status_justification
+* supporting_image_ids
+* valid_image
+* severity
+
+Requirements:
+
+* progress logging
+* exception handling
+* retry logic
+* batch processing
+* resume capability
+
+Generate production-ready code.
+
+
+
+PROMPT - 8
+
+
+Implement evaluation/evaluate.py.
+
+Requirements:
+
+Use sample_claims.csv.
+
+Compare predictions against labels.
+
+Evaluate:
+
+* claim_status accuracy
+* issue_type accuracy
+* object_part accuracy
+* severity accuracy
+
+Generate:
+
+evaluation_report.md
+
+Report must include:
+
+1. Metrics
+2. Error analysis
+3. Common failure modes
+4. Improvement recommendations
+
+Generate production-ready code.
+
+
+
+
+PROMPT - 9
+
+
+Create a complete README.md.
+
+Include:
+
+* project overview
+* architecture diagram
+* setup instructions
+* environment variables
+* execution instructions
+* evaluation instructions
+* output format explanation
+* assumptions
+* limitations
+* operational analysis
+
+Also generate:
+
+evaluation/evaluation_report.md template
+
+The report must contain:
+
+* approximate model calls
+* token estimates
+* image counts
+* pricing assumptions
+* estimated cost
+* latency estimates
+* batching strategy
+* retry strategy
+* rate-limit considerations
+
+Generate hackathon-quality documentation.
