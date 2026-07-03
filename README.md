@@ -101,22 +101,6 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Environment variables
-
-Required:
-
-```bash
-OPENAI_API_KEY=your_api_key_here
-```
-
-Optional:
-
-```bash
-OPENAI_CLAIM_MODEL=gpt-4.1-mini
-OPENAI_VISION_MODEL=gpt-4.1-mini
-```
-
-The defaults are selected for a hackathon-friendly balance of cost, latency, and quality. Before final production deployment, verify current model availability and pricing in the official OpenAI pricing and model documentation.
 
 ## Input files
 
@@ -251,15 +235,7 @@ python evaluation/evaluate.py \
   --report evaluation/evaluation_report.md
 ```
 
-The evaluator reports:
 
-- claim status accuracy
-- issue type accuracy
-- object part accuracy
-- severity accuracy
-- error analysis
-- common failure modes
-- improvement recommendations
 
 ## Decision policy
 
@@ -356,15 +332,6 @@ The pipeline uses logical CSV batches, not the OpenAI Batch API:
 - Backoff uses jitter to reduce retry spikes.
 - Row-level exception handling preserves batch progress.
 
-### Rate-limit considerations
-
-For hackathon runs:
-
-- Start with `--workers 1`.
-- Increase to `--workers 2` or `--workers 3` only after confirming stable rate-limit behavior.
-- Reduce image size/detail if vision calls become slow or expensive.
-- Use resume to avoid paying again for completed rows.
-- If rate limits are frequent, lower concurrency and retry settings.
 
 ## Assumptions
 
@@ -382,12 +349,3 @@ For hackathon runs:
 - Model behavior and pricing should be rechecked against current OpenAI documentation before production use.
 - This project is designed for claim triage and verification support, not final legal or insurance adjudication.
 
-## Final submission checklist
-
-- Place the input CSV files in the project root or pass custom paths.
-- Set `OPENAI_API_KEY`.
-- Run `python main.py`.
-- Confirm `output.csv` has all required columns.
-- Run `python evaluation/evaluate.py --labels sample_claims.csv --predictions output.csv`.
-- Review `evaluation/evaluation_report.md`.
-- Submit the source code, README, requirements, and generated output/report files.
